@@ -101,8 +101,8 @@ public class RestaurantService {
 
     public RestaurantResponseDTO getRestaurant(Long id) {
         Restaurant restaurant =  restaurantRepository.findById(id).orElse(null);
-        if(restaurant == null)
-            return null;
+//        if(restaurant == null)
+//            return null;
 
         return convertRestaurantToRestaurantResponseDTO(restaurant);
 

@@ -33,6 +33,7 @@ public class RestaurantController {
 
     @GetMapping("/{id}")
     public RestaurantResponseDTO getRestaurant(@PathVariable Long id){
+
         return restaurantService.getRestaurant(id);
     }
 }

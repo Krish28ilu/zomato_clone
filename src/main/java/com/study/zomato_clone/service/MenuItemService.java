@@ -2,7 +2,9 @@ package com.study.zomato_clone.service;
 
 
 import com.study.zomato_clone.dto.MenuItemRequestDTO;
+import com.study.zomato_clone.dto.MenuItemResponseDTO;
 import com.study.zomato_clone.dto.MenuItemVariantRequestDTO;
+import com.study.zomato_clone.dto.MenuItemVariantResponseDTO;
 import com.study.zomato_clone.entity.MenuItem;
 import com.study.zomato_clone.entity.MenuItemVariant;
 import com.study.zomato_clone.entity.Restaurant;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 
 @Service
 public class MenuItemService {
@@ -198,4 +201,120 @@ public class MenuItemService {
 //        return new ResponseEntity<>("Menu item updated successfully", HttpStatusCode.valueOf(201));
       //  return null;
     }
+
+    public ResponseEntity<String> deleteMenuItem(Long id) {
+
+        if (id == null || id <= 0) {
+            return new ResponseEntity<>("Menu item id must be greater than 0",
+                    HttpStatusCode.valueOf(400));
+        }
+
+        Optional<MenuItem> menuItemOptional = menuItemRepository.findById(id);
+
+        if (menuItemOptional.isEmpty()) {
+            return new ResponseEntity<>("Menu item id does not exist",
+                    HttpStatusCode.valueOf(404));
+        }
+
+        MenuItem menuItem = menuItemOptional.get();
+
+       // menuItemRepository.delete(menuItem);
+
+        menuItemRepository.deleteById(id);
+        return new ResponseEntity<>(
+                "Menu item and all its variants deleted successfully",
+                HttpStatusCode.valueOf(200)
+        );
+
+    }
+
+
+    public ResponseEntity<MenuItemResponseDTO> getMenuItem(Long id) {
+
+
+    }
+
+    public ResponseEntity<List<MenuItemResponseDTO>> getAllMenuItems() {
+
+        List<MenuItem> menuItems = menuItemRepository.findAll();
+
+        List<MenuItemResponseDTO> menuItemResponseDTOS = convertMenuItemListToMenuItemResponseDTO(menuItems);
+
+        return new ResponseEntity<>(menuItemResponseDTOS,
+                HttpStatusCode.valueOf(200)
+        );
+
+
+    }
+
+    private List<MenuItemResponseDTO> convertMenuItemListToMenuItemResponseDTO(List<MenuItem> menuItems) {
+        List<MenuItemResponseDTO> menuItemResponseDTOS =
+                new ArrayList<>();
+
+        for (MenuItem menuItem : menuItems) {
+
+            MenuItemResponseDTO menuItemResponseDTO =
+                    convertMenuItemToMenuItemResponseDTO(menuItem);
+
+            menuItemResponseDTOS.add(menuItemResponseDTO);
+        }
+
+        return menuItemResponseDTOS;
+    }
+
+    private MenuItemResponseDTO convertMenuItemToMenuItemResponseDTO(
+            MenuItem menuItem) {
+
+        MenuItemResponseDTO menuItemResponseDTO =
+                new MenuItemResponseDTO();
+
+        menuItemResponseDTO.setId(menuItem.getId());
+
+        menuItemResponseDTO.setName(menuItem.getName());
+
+        menuItemResponseDTO.setDescription(
+                menuItem.getDescription()
+        );
+
+        menuItemResponseDTO.setMenuItemType(
+                menuItem.getMenuItemType()
+        );
+
+        menuItemResponseDTO.setLabel(
+                menuItem.getLabel()
+        );
+
+        List<MenuItemVariantResponseDTO> menuItemVariantResponseDTOS =
+                new ArrayList<>();
+
+        for (MenuItemVariant menuItemVariant :
+                menuItem.getMenuItemVariantList()) {
+
+            MenuItemVariantResponseDTO menuItemVariantResponseDTO =
+                    new MenuItemVariantResponseDTO();
+
+            menuItemVariantResponseDTO.setDishVariantName(
+                    menuItemVariant.getName()
+            );
+
+            menuItemVariantResponseDTO.setAvailable(
+                    menuItemVariant.isAvailable()
+            );
+
+            menuItemVariantResponseDTO.setPrice(
+                    menuItemVariant.getPrice()
+            );
+
+            menuItemVariantResponseDTOS.add(
+                    menuItemVariantResponseDTO
+            );
+        }
+
+        menuItemResponseDTO.setMenuItemVariants(
+                menuItemVariantResponseDTOS
+        );
+
+        return menuItemResponseDTO;
+    }
+
 }
