@@ -36,4 +36,13 @@ public class RestaurantController {
 
         return restaurantService.getRestaurant(id);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteRestaurant(@PathVariable Long id){
+    }
+
+    @PutMapping
+    public ResponseEntity<String> updateRestaurant(@RequestBody RestaurantRequestDTO restaurantRequestDTO){
+
+    }
 }

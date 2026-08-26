@@ -230,7 +230,23 @@ public class MenuItemService {
 
 
     public ResponseEntity<MenuItemResponseDTO> getMenuItem(Long id) {
+        if (id == null || id <= 0) {
+            return new ResponseEntity<>(HttpStatusCode.valueOf(400));
+        }
 
+        Optional<MenuItem> menuItemOptional =
+                menuItemRepository.findById(id);
+
+        if (menuItemOptional.isEmpty()) {
+            return new ResponseEntity<>(HttpStatusCode.valueOf(404));
+        }
+
+        MenuItem menuItem = menuItemOptional.get();
+
+        MenuItemResponseDTO menuItemResponseDTO =
+                convertMenuItemToMenuItemResponseDTO(menuItem);
+
+        return new ResponseEntity<>(menuItemResponseDTO, HttpStatusCode.valueOf(200));
 
     }
 

@@ -1,6 +1,7 @@
 package com.study.zomato_clone.controller;
 
 import com.study.zomato_clone.dto.MenuItemRequestDTO;
+import com.study.zomato_clone.dto.MenuItemResponseDTO;
 import com.study.zomato_clone.service.MenuItemVariantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,10 @@ public class MenuItemVariantController {
     @Autowired
     private MenuItemVariantService menuItemVariantService;
 
+    @PostMapping
+    public ResponseEntity<MenuItemResponseDTO> saveMenuItem(@RequestBody MenuItemRequestDTO menuItemRequestDTO){
+
+    }
     @PutMapping("/{id}")
     public ResponseEntity<String> editMenuItemVariant(@PathVariable Long id, @RequestBody MenuItemRequestDTO menuItemRequestDTO){
         return null;
