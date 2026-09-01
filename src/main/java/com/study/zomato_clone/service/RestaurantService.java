@@ -11,6 +11,7 @@ import com.study.zomato_clone.entity.Restaurant;
 import com.study.zomato_clone.repository.RestaurantRepository;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -152,5 +153,91 @@ public class RestaurantService {
         return restaurantResponseDTO;
 
 
+    }
+
+    public String updateRestaurant(
+            Long id,
+            RestaurantRequestDTO restaurantRequestDTO) {
+
+        Restaurant restaurant = restaurantRepository.findById(id).orElse(null);
+
+        if (restaurant == null) {
+            return "Restaurant not found";
+        }
+
+        if (ObjectUtils.isEmpty(restaurantRequestDTO)) {
+            return "Invalid data";
+        }
+
+        if (ObjectUtils.isEmpty(restaurantRequestDTO.getName()) ||
+                ObjectUtils.isEmpty(restaurantRequestDTO.getCountry()) ||
+                ObjectUtils.isEmpty(restaurantRequestDTO.getPhoneNumber()) ||
+                ObjectUtils.isEmpty(restaurantRequestDTO.getStreetLine1()) ||
+                ObjectUtils.isEmpty(restaurantRequestDTO.getPinCode()) ||
+                ObjectUtils.isEmpty(restaurantRequestDTO.getLatitude()) ||
+                ObjectUtils.isEmpty(restaurantRequestDTO.getLongitude())) {
+
+            return "Invalid data";
+        }
+
+        if (!restaurantRequestDTO.getPhoneNumber().matches("\\d{10}")) {
+            return "Invalid data";
+        }
+
+        if (!restaurantRequestDTO.getPinCode().matches("^[1-9][0-9]{5}$")) {
+            return "Invalid data";
+        }
+
+        if (restaurantRequestDTO.getLatitude() < -90 || restaurantRequestDTO.getLatitude() > 90) {
+
+            return "Invalid data";
+        }
+
+        if (restaurantRequestDTO.getLongitude() < -180 ||
+                restaurantRequestDTO.getLongitude() > 180) {
+
+            return "Invalid data";
+        }
+
+        Restaurant existingRestaurant = restaurantRepository.findByPhone(
+                        restaurantRequestDTO.getPhoneNumber()
+                );
+
+        if (existingRestaurant != null &&
+                !existingRestaurant.getId().equals(id)) {
+
+            return "Phone number already exists";
+        }
+
+
+        restaurant.setName(restaurantRequestDTO.getName());
+        restaurant.setPhone(restaurantRequestDTO.getPhoneNumber());
+
+
+        Address address = restaurant.getAddress();
+
+        address.setStreetLine1(restaurantRequestDTO.getStreetLine1());
+        address.setStreetLine2(restaurantRequestDTO.getStreetLine2());
+        address.setCountry(restaurantRequestDTO.getCountry());
+        address.setPinCode(restaurantRequestDTO.getPinCode());
+        address.setLatitude(restaurantRequestDTO.getLatitude());
+        address.setLongitude(restaurantRequestDTO.getLongitude());
+
+        restaurant.setAddress(address);
+
+        restaurantRepository.save(restaurant);
+
+        return "Restaurant updated successfully";
+    }
+
+    public String deleteRestaurant(Long id) {
+
+        if (!restaurantRepository.existsById(id)) {
+            return "Restaurant not found";
+        }
+
+        restaurantRepository.deleteById(id);
+
+        return "Restaurant deleted successfully";
     }
 }

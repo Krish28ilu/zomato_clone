@@ -37,12 +37,29 @@ public class RestaurantController {
         return restaurantService.getRestaurant(id);
     }
 
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteRestaurant(@PathVariable Long id){
+    public ResponseEntity<String> deleteRestaurant(@PathVariable Long id) {
+
+            restaurantService.deleteRestaurant(id);
+
+        return new ResponseEntity<>(
+                "Restaurant deleted successfully",
+                HttpStatusCode.valueOf(201)
+        );
+
     }
 
-    @PutMapping
-    public ResponseEntity<String> updateRestaurant(@RequestBody RestaurantRequestDTO restaurantRequestDTO){
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateRestaurant(
+            @PathVariable Long id,
+            @RequestBody RestaurantRequestDTO restaurantRequestDTO) {
+
+        restaurantService.updateRestaurant(id, restaurantRequestDTO);
+        return new ResponseEntity<>(
+                "Restaurant updated successfully",
+                HttpStatusCode.valueOf(201)
+        );
 
     }
 }
