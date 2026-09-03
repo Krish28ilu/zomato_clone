@@ -25,9 +25,16 @@ public class RestaurantService {
     @Autowired
     private RestaurantRepository restaurantRepository;
 
-    public void addRestaurant(RestaurantRequestDTO restaurantRequestDTO) {
+    public RestaurantResponseDTO addRestaurant(RestaurantRequestDTO restaurantRequestDTO) {
+        validateRestaurantRequestDTO(restaurantRequestDTO);
+        // final after  all validations are passed then save restuarant
+        Restaurant restaurant = convertRestaurantDTOtoEntity(restaurantRequestDTO);
+        restaurant = restaurantRepository.save(restaurant);
+        return convertRestaurantToRestaurantResponseDTO(restaurant);
 
+    }
 
+    private void validateRestaurantRequestDTO(RestaurantRequestDTO restaurantRequestDTO) {
         if(ObjectUtils.isEmpty(restaurantRequestDTO)){
             return;
         }
@@ -78,11 +85,6 @@ public class RestaurantService {
         if(!ObjectUtils.isEmpty(existingRestaurant)){
             return;
         }
-
-        // final after  all validations are passed then save restuarant
-        Restaurant restaurant = convertRestaurantDTOtoEntity(restaurantRequestDTO);
-        restaurantRepository.save(restaurant);
-
     }
 
     private Restaurant convertRestaurantDTOtoEntity(RestaurantRequestDTO restaurantRequestDTO) {
