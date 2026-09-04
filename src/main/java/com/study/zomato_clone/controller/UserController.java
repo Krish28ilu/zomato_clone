@@ -24,7 +24,7 @@ public class UserController {
 
 
     @GetMapping
-    public ResponseEntity<List<UserResponseDTO>> findAll() {
+    public List<UserResponseDTO> findAll() {
        return userService.findAll();
     }
 
@@ -34,18 +34,18 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<String> addUser(@RequestBody UserRequestDTO userRequestDTO) {
+    public UserResponseDTO addUser(@RequestBody UserRequestDTO userRequestDTO) {
        return userService.addUser(userRequestDTO);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateUser(@PathVariable Long id, @RequestBody UserRequestDTO userRequestDTO) {
+    public UserResponseDTO updateUser(@PathVariable Long id, @RequestBody UserRequestDTO userRequestDTO) {
 
         return userService.updateUser(userRequestDTO, id);
     }
 
     @DeleteMapping("/{id{")
-    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+    public UserResponseDTO deleteUser(@PathVariable Long id) {
        return userService.deleteUser(id);
     }
 
