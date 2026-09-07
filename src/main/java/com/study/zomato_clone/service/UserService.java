@@ -1,11 +1,14 @@
 package com.study.zomato_clone.service;
 
+import com.study.zomato_clone.dto.RestaurantResponseDTO;
 import com.study.zomato_clone.dto.UserRequestDTO;
 import com.study.zomato_clone.dto.UserResponseDTO;
 import com.study.zomato_clone.entity.Address;
+import com.study.zomato_clone.entity.Restaurant;
 import com.study.zomato_clone.entity.User;
 import com.study.zomato_clone.exception.InvalidRequestException;
 import com.study.zomato_clone.exception.NoSuchUserExistException;
+import com.study.zomato_clone.repository.RestaurantRepository;
 import com.study.zomato_clone.repository.UserRepository;
 import io.micrometer.common.util.StringUtils;
 import org.jspecify.annotations.Nullable;
@@ -22,6 +25,12 @@ import java.util.Objects;
 public class UserService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RestaurantRepository restaurantRepository;
+
+    @Autowired
+    private RestaurantService restaurantService;
 
     public List<UserResponseDTO> findAll() {
         List<User> userList = userRepository.findAll();
@@ -271,5 +280,16 @@ public class UserService {
         userRepository.deleteById(id);
 
         return convertUserToUserResponseDTO(user);
+    }
+
+    public List<RestaurantResponseDTO> getNearbyRestaurants(Double lat, Double lon) {
+
+        List<Restaurant> restaurants = restaurantRepository.findNearbyRestaurants(lon,lat);
+        List<RestaurantResponseDTO> restaurantResponseDTOList = new ArrayList<>();
+        for (Restaurant restaurant : restaurants) {
+                RestaurantResponseDTO restaurantResponseDTO = restaurantService.convertRestaurantToRestaurantResponseDTO(restaurant);
+                restaurantResponseDTOList.add(restaurantResponseDTO);
+            }
+        return  restaurantResponseDTOList;
     }
 }

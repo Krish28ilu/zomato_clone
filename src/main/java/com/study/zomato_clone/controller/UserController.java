@@ -2,6 +2,7 @@ package com.study.zomato_clone.controller;
 
 
 import com.study.zomato_clone.dto.MenuItemResponseDTO;
+import com.study.zomato_clone.dto.RestaurantResponseDTO;
 import com.study.zomato_clone.dto.UserRequestDTO;
 import com.study.zomato_clone.dto.UserResponseDTO;
 import com.study.zomato_clone.service.MenuItemService;
@@ -44,9 +45,13 @@ public class UserController {
         return userService.updateUser(userRequestDTO, id);
     }
 
-    @DeleteMapping("/{id{")
+    @DeleteMapping("/{id}")
     public UserResponseDTO deleteUser(@PathVariable Long id) {
        return userService.deleteUser(id);
     }
 
+    @GetMapping("/getNearbyRestaurants")
+    public  List<RestaurantResponseDTO> getNearbyRestaurants(@RequestParam("lon") Double lon, @RequestParam ("lat") Double lat){
+        return userService.getNearbyRestaurants(lon,lat);
+    }
 }
